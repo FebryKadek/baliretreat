@@ -61,9 +61,33 @@ Images live in `assets/img/` with descriptive names (e.g. `hero-villa-jungle.jpg
 `flower-bath.jpg`). To change one, drop in a new file with the same name, or update the
 `src` in `index.html`. All originals are kept in `images/` and `images/web/`.
 
-## Deploying (free options)
+## Deploying to GitHub Pages
 
-- **Netlify** or **Cloudflare Pages**: drag-and-drop the folder, or connect a Git repo.
-- **GitHub Pages**: push to a repo and enable Pages.
+This is a plain static site served from the repo root, so it works on GitHub Pages
+with no build step.
+
+1. Commit the latest changes and push to GitHub:
+
+   ```bash
+   git add .
+   git commit -m "Add .gitignore and .nojekyll for GitHub Pages"
+   git remote add origin https://github.com/FebryKadek/baliretreat.git   # first time only
+   git push -u origin main
+   ```
+
+2. On GitHub: **Settings → Pages → Build and deployment**
+   - Source: **Deploy from a branch**
+   - Branch: **main**, folder: **/ (root)** → **Save**
+
+3. Wait ~1 minute. Your site goes live at:
+   - `https://<user>.github.io/<repo>/`  (project repo), or
+   - `https://<user>.github.io/`  (if the repo is named `<user>.github.io`)
+
+All links and asset paths are **relative**, so the site works at either URL with no changes.
+
+A `.nojekyll` file is included so GitHub serves the files as-is (no Jekyll processing).
+
+### Other free options
+- **Netlify** or **Cloudflare Pages**: drag-and-drop the folder, or connect the Git repo.
 
 No server or database needed — it's a static site.
