@@ -41,7 +41,7 @@
 
   /* ----- Reveal on scroll ----- */
   var revealEls = document.querySelectorAll(
-    ".section-head, .card, .tile, .step, .split-media, .split-body, .g-item"
+    ".section-head, .exp-content, .tile, .step, .split-media, .split-body, .g-item"
   );
   revealEls.forEach(function (el) { el.classList.add("reveal"); });
 
