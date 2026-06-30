@@ -20,22 +20,37 @@
   /* ----- Mobile navigation ----- */
   var toggle = document.querySelector(".nav-toggle");
   var menu = document.getElementById("nav-menu");
-  function closeMenu() {
-    menu.classList.remove("open");
-    toggle.classList.remove("open");
-    toggle.setAttribute("aria-expanded", "false");
+  var backdrop = document.getElementById("nav-backdrop");
+  var navClose = document.getElementById("nav-close");
+
+  function setMenu(open) {
+    menu.classList.toggle("open", open);
+    toggle.classList.toggle("open", open);
+    if (backdrop) {
+      backdrop.classList.toggle("open", open);
+      backdrop.hidden = false; // managed via CSS opacity/pointer-events
+    }
+    toggle.setAttribute("aria-expanded", String(open));
+    // Lock background scroll while the menu is open (mobile only).
+    document.body.style.overflow = open ? "hidden" : "";
   }
+  function closeMenu() { setMenu(false); }
+
   if (toggle && menu) {
     toggle.addEventListener("click", function () {
-      var open = menu.classList.toggle("open");
-      toggle.classList.toggle("open", open);
-      toggle.setAttribute("aria-expanded", String(open));
+      setMenu(!menu.classList.contains("open"));
     });
+    if (navClose) navClose.addEventListener("click", closeMenu);
+    if (backdrop) backdrop.addEventListener("click", closeMenu);
     menu.querySelectorAll("a").forEach(function (a) {
       a.addEventListener("click", closeMenu);
     });
     document.addEventListener("keydown", function (e) {
       if (e.key === "Escape") closeMenu();
+    });
+    // If the viewport grows back to desktop, make sure state is reset.
+    window.addEventListener("resize", function () {
+      if (window.innerWidth > 860 && menu.classList.contains("open")) closeMenu();
     });
   }
 
