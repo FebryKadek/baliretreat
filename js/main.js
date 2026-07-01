@@ -74,45 +74,43 @@
     revealEls.forEach(function (el) { el.classList.add("visible"); });
   }
 
-  /* ----- Fixed-background effect for experience panels -----
-     Emulates CSS `background-attachment: fixed` in JS so it works on
-     desktop, tablet and mobile alike. Each panel's background layer is
-     translated by the opposite of the panel's viewport offset, so the
-     image appears anchored to the viewport while content scrolls over it. */
-  var parallaxEls = Array.prototype.slice.call(
-    document.querySelectorAll(".exp-bg[data-parallax]")
+  /* ----- Fixed backdrop for experience sections -----
+     The backdrop is a real position:fixed element (smooth on mobile, unlike
+     background-attachment:fixed). We only swap which image is visible when a
+     section crosses mid-screen — driven by IntersectionObserver, so there is
+     NO per-frame work and nothing to jank. */
+  var bgLayers = Array.prototype.slice.call(
+    document.querySelectorAll(".exp-bg-layer")
   );
-  var reduceMotion = window.matchMedia
-    ? window.matchMedia("(prefers-reduced-motion: reduce)").matches
-    : false;
+  var expPanels = Array.prototype.slice.call(
+    document.querySelectorAll(".exp-panel")
+  );
 
-  if (parallaxEls.length && !reduceMotion) {
-    var ticking = false;
-
-    function updateParallax() {
-      var vh = window.innerHeight;
-      for (var i = 0; i < parallaxEls.length; i++) {
-        var bg = parallaxEls[i];
-        var panel = bg.parentElement;
-        var rect = panel.getBoundingClientRect();
-        // Skip panels that are well outside the viewport.
-        if (rect.bottom < -vh || rect.top > vh) continue;
-        bg.style.transform = "translate3d(0," + (-rect.top) + "px,0)";
-      }
-      ticking = false;
-    }
-
-    function requestTick() {
-      if (!ticking) {
-        ticking = true;
-        window.requestAnimationFrame(updateParallax);
+  if (bgLayers.length && expPanels.length) {
+    function activateLayer(idx) {
+      for (var i = 0; i < bgLayers.length; i++) {
+        bgLayers[i].classList.toggle("is-active", i === idx);
       }
     }
+    // Show the first image up front so the first panel never flashes empty.
+    activateLayer(0);
 
-    window.addEventListener("scroll", requestTick, { passive: true });
-    window.addEventListener("resize", requestTick);
-    window.addEventListener("orientationchange", requestTick);
-    updateParallax();
+    if ("IntersectionObserver" in window) {
+      var bgObserver = new IntersectionObserver(
+        function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) {
+              var idx = expPanels.indexOf(entry.target);
+              if (idx !== -1) activateLayer(idx);
+            }
+          });
+        },
+        // Root shrunk to a line across the middle: exactly one panel is
+        // "intersecting" at a time, so the image swaps as each crosses centre.
+        { rootMargin: "-50% 0px -50% 0px", threshold: 0 }
+      );
+      expPanels.forEach(function (p) { bgObserver.observe(p); });
+    }
   }
 
   /* ----- Lightbox gallery ----- */

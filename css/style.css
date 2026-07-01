@@ -66,7 +66,9 @@ p { color: var(--ink-soft); }
 .center { text-align: center; margin-inline: auto; }
 .center .lead { margin-inline: auto; }
 
-.section { padding: clamp(4rem, 9vw, 7.5rem) 0; }
+/* Opaque + above the fixed backdrop, so only the (transparent) experience
+   panels reveal it. Sections with their own colour override this background. */
+.section { padding: clamp(4rem, 9vw, 7.5rem) 0; position: relative; z-index: 1; background-color: var(--cream); }
 .section-head { margin-bottom: 3rem; max-width: 60ch; }
 
 /* ---------- Buttons ---------- */
@@ -136,7 +138,7 @@ p { color: var(--ink-soft); }
 .nav-close-row, .nav-close, .nav-backdrop { display: none; }
 
 /* ---------- Hero ---------- */
-.hero { position: relative; min-height: 100svh; display: flex; align-items: center; color: #fff; overflow: hidden; }
+.hero { position: relative; z-index: 1; min-height: 100svh; display: flex; align-items: center; color: #fff; overflow: hidden; }
 .hero-bg {
   position: absolute; inset: 0; background-size: cover; background-position: center;
   transform: scale(1.05); animation: heroZoom 18s ease-out forwards;
@@ -169,22 +171,26 @@ p { color: var(--ink-soft); }
 /* ---------- Experiences intro ---------- */
 .experiences-intro { padding-bottom: clamp(2.5rem, 5vw, 4rem); }
 
-/* ---------- Full-screen experience panels ---------- */
+/* ---------- Fixed backdrop for experience sections ----------
+   A single position:fixed layer (composited natively, works on mobile) shows
+   one image at a time. Images cross-fade via opacity when the active section
+   changes — no per-frame scroll math, so no jank. */
+.exp-bgs { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+.exp-bg-layer {
+  position: absolute; inset: 0;
+  background-size: cover; background-position: center;
+  opacity: 0; transition: opacity .8s ease;
+}
+.exp-bg-layer.is-active { opacity: 1; }
+
+/* ---------- Full-screen experience panels ----------
+   Transparent, so the fixed backdrop shows through; the overlay + content
+   scroll normally over the stationary image. */
 .exp-panel {
-  position: relative;
+  position: relative; z-index: 1;
   min-height: 100svh;
   display: flex; align-items: center;
   color: #fff; overflow: hidden;
-}
-/* Background layer: sits behind the overlay. JS translates it on scroll so the
-   image appears to stay fixed while content scrolls over it — works on desktop,
-   tablet AND mobile (unlike CSS background-attachment: fixed). */
-.exp-bg {
-  position: absolute; inset: -120px 0; z-index: 0;  /* vertical overscan avoids gaps as mobile bars show/hide */
-  background-size: cover; background-position: center;
-  will-change: transform;
-  transform: translate3d(0, 0, 0);
-  backface-visibility: hidden;
 }
 .exp-overlay {
   position: absolute; inset: 0; z-index: 1;
@@ -268,7 +274,7 @@ p { color: var(--ink-soft); }
 .form-status.err { color: var(--terra-dark); }
 
 /* ---------- Footer ---------- */
-.site-footer { background: var(--green-dark); color: rgba(255,255,255,0.85); padding-top: 3.5rem; }
+.site-footer { position: relative; z-index: 1; background: var(--green-dark); color: rgba(255,255,255,0.85); padding-top: 3.5rem; }
 .footer-inner { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 2rem; padding-bottom: 2.5rem; }
 .site-footer .brand { color: #fff; }
 .footer-tag { color: rgba(255,255,255,0.6); font-size: 0.9rem; margin-top: 0.4rem; }
@@ -368,4 +374,5 @@ p { color: var(--ink-soft); }
 @media (prefers-reduced-motion: reduce) {
   * { animation: none !important; scroll-behavior: auto; }
   .reveal { opacity: 1; transform: none; }
+  .exp-bg-layer { transition: none; }
 }

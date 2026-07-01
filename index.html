@@ -44,6 +44,18 @@
     </div>
   </header>
 
+  <!-- Fixed backdrop for the experience sections. A single position:fixed layer
+       (works on mobile, unlike background-attachment:fixed) holds all five images
+       stacked; only the active one is shown. The image is swapped via
+       IntersectionObserver when a section crosses mid-screen — no per-frame JS. -->
+  <div class="exp-bgs" aria-hidden="true">
+    <div class="exp-bg-layer" style="background-image:url('assets/img/flower-bath.jpg')"></div>
+    <div class="exp-bg-layer" style="background-image:url('assets/img/water-temple.jpg')"></div>
+    <div class="exp-bg-layer" style="background-image:url('assets/img/daybed-view.jpg')"></div>
+    <div class="exp-bg-layer" style="background-image:url('assets/img/dinner-setup.jpg')"></div>
+    <div class="exp-bg-layer" style="background-image:url('assets/img/villa-library.jpg')"></div>
+  </div>
+
   <!-- ============ HERO / HOME ============ -->
   <section class="hero" id="home">
     <div class="hero-bg" style="background-image:url('assets/img/hero-villa-jungle.jpg')"></div>
@@ -99,7 +111,6 @@
 
   <!-- Each experience is its own full-screen panel -->
   <section class="exp-panel align-left" id="exp-retreats">
-    <div class="exp-bg" data-parallax style="background-image:url('assets/img/flower-bath.jpg')"></div>
     <div class="exp-overlay"></div>
     <div class="container exp-inner">
       <div class="exp-content">
@@ -113,7 +124,6 @@
   </section>
 
   <section class="exp-panel align-right" id="exp-tours">
-    <div class="exp-bg" data-parallax style="background-image:url('assets/img/water-temple.jpg')"></div>
     <div class="exp-overlay"></div>
     <div class="container exp-inner">
       <div class="exp-content">
@@ -127,7 +137,6 @@
   </section>
 
   <section class="exp-panel align-left" id="exp-family">
-    <div class="exp-bg" data-parallax style="background-image:url('assets/img/daybed-view.jpg')"></div>
     <div class="exp-overlay"></div>
     <div class="container exp-inner">
       <div class="exp-content">
@@ -141,7 +150,6 @@
   </section>
 
   <section class="exp-panel align-right" id="exp-workshops">
-    <div class="exp-bg" data-parallax style="background-image:url('assets/img/dinner-setup.jpg')"></div>
     <div class="exp-overlay"></div>
     <div class="container exp-inner">
       <div class="exp-content">
@@ -155,7 +163,6 @@
   </section>
 
   <section class="exp-panel align-left" id="exp-nomad">
-    <div class="exp-bg" data-parallax style="background-image:url('assets/img/villa-library.jpg')"></div>
     <div class="exp-overlay"></div>
     <div class="container exp-inner">
       <div class="exp-content">
