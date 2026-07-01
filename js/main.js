@@ -74,6 +74,47 @@
     revealEls.forEach(function (el) { el.classList.add("visible"); });
   }
 
+  /* ----- Fixed-background effect for experience panels -----
+     Emulates CSS `background-attachment: fixed` in JS so it works on
+     desktop, tablet and mobile alike. Each panel's background layer is
+     translated by the opposite of the panel's viewport offset, so the
+     image appears anchored to the viewport while content scrolls over it. */
+  var parallaxEls = Array.prototype.slice.call(
+    document.querySelectorAll(".exp-bg[data-parallax]")
+  );
+  var reduceMotion = window.matchMedia
+    ? window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    : false;
+
+  if (parallaxEls.length && !reduceMotion) {
+    var ticking = false;
+
+    function updateParallax() {
+      var vh = window.innerHeight;
+      for (var i = 0; i < parallaxEls.length; i++) {
+        var bg = parallaxEls[i];
+        var panel = bg.parentElement;
+        var rect = panel.getBoundingClientRect();
+        // Skip panels that are well outside the viewport.
+        if (rect.bottom < -vh || rect.top > vh) continue;
+        bg.style.transform = "translate3d(0," + (-rect.top) + "px,0)";
+      }
+      ticking = false;
+    }
+
+    function requestTick() {
+      if (!ticking) {
+        ticking = true;
+        window.requestAnimationFrame(updateParallax);
+      }
+    }
+
+    window.addEventListener("scroll", requestTick, { passive: true });
+    window.addEventListener("resize", requestTick);
+    window.addEventListener("orientationchange", requestTick);
+    updateParallax();
+  }
+
   /* ----- Lightbox gallery ----- */
   var gallery = document.getElementById("gallery");
   var lightbox = document.getElementById("lightbox");

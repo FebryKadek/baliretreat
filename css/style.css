@@ -174,14 +174,23 @@ p { color: var(--ink-soft); }
   position: relative;
   min-height: 100svh;
   display: flex; align-items: center;
-  background-size: cover; background-position: center;
   color: #fff; overflow: hidden;
 }
+/* Background layer: sits behind the overlay. JS translates it on scroll so the
+   image appears to stay fixed while content scrolls over it — works on desktop,
+   tablet AND mobile (unlike CSS background-attachment: fixed). */
+.exp-bg {
+  position: absolute; inset: -120px 0; z-index: 0;  /* vertical overscan avoids gaps as mobile bars show/hide */
+  background-size: cover; background-position: center;
+  will-change: transform;
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+}
 .exp-overlay {
-  position: absolute; inset: 0;
+  position: absolute; inset: 0; z-index: 1;
   background: linear-gradient(180deg, rgba(15,24,19,0.30), rgba(15,24,19,0.55));
 }
-.exp-inner { position: relative; width: min(100% - 3rem, var(--maxw)); display: flex; }
+.exp-inner { position: relative; z-index: 2; width: min(100% - 3rem, var(--maxw)); display: flex; }
 .exp-panel.align-left  .exp-inner { justify-content: flex-start; }
 .exp-panel.align-right .exp-inner { justify-content: flex-end; }
 
@@ -201,11 +210,6 @@ p { color: var(--ink-soft); }
 }
 .exp-content h2 { color: #fff; font-size: clamp(2.4rem, 5vw, 3.6rem); margin-bottom: 1rem; }
 .exp-content p { color: rgba(255,255,255,0.9); font-size: 1.1rem; margin-bottom: 1.8rem; }
-
-/* Subtle parallax on capable, larger screens only */
-@media (hover: hover) and (min-width: 861px) {
-  .exp-panel { background-attachment: fixed; }
-}
 
 /* ---------- Retreats tiles ---------- */
 .retreats { background: var(--green-dark); color: #fff; }
@@ -308,7 +312,6 @@ p { color: var(--ink-soft); }
   .g-wide { grid-column: span 2; }
   .g-tall { grid-row: span 1; }
 
-  .exp-panel { background-attachment: scroll; }
   .exp-panel.align-right .exp-inner { justify-content: flex-start; }
   .exp-content { max-width: 100%; }
 
