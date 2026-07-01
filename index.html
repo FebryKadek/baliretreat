@@ -44,18 +44,6 @@
     </div>
   </header>
 
-  <!-- Fixed backdrop for the experience sections. A single position:fixed layer
-       (works on mobile, unlike background-attachment:fixed) holds all five images
-       stacked; only the active one is shown. The image is swapped via
-       IntersectionObserver when a section crosses mid-screen — no per-frame JS. -->
-  <div class="exp-bgs" aria-hidden="true">
-    <div class="exp-bg-layer" style="background-image:url('assets/img/flower-bath.jpg')"></div>
-    <div class="exp-bg-layer" style="background-image:url('assets/img/water-temple.jpg')"></div>
-    <div class="exp-bg-layer" style="background-image:url('assets/img/daybed-view.jpg')"></div>
-    <div class="exp-bg-layer" style="background-image:url('assets/img/dinner-setup.jpg')"></div>
-    <div class="exp-bg-layer" style="background-image:url('assets/img/villa-library.jpg')"></div>
-  </div>
-
   <!-- ============ HERO / HOME ============ -->
   <section class="hero" id="home">
     <div class="hero-bg" style="background-image:url('assets/img/hero-villa-jungle.jpg')"></div>
@@ -108,6 +96,20 @@
       </header>
     </div>
   </section>
+
+  <!-- Experience "stage": a sticky backdrop stays pinned while the five
+       transparent panels scroll over it. Using position:sticky (in normal flow)
+       instead of a fixed layer behind content keeps it rendering correctly on
+       all mobile browsers, incl. Samsung Internet. The visible image is swapped
+       via IntersectionObserver as each panel crosses mid-screen (no per-frame JS). -->
+  <div class="exp-stage">
+    <div class="exp-bg" aria-hidden="true">
+      <div class="exp-bg-layer" style="background-image:url('assets/img/flower-bath.jpg')"></div>
+      <div class="exp-bg-layer" style="background-image:url('assets/img/water-temple.jpg')"></div>
+      <div class="exp-bg-layer" style="background-image:url('assets/img/daybed-view.jpg')"></div>
+      <div class="exp-bg-layer" style="background-image:url('assets/img/dinner-setup.jpg')"></div>
+      <div class="exp-bg-layer" style="background-image:url('assets/img/villa-library.jpg')"></div>
+    </div>
 
   <!-- Each experience is its own full-screen panel -->
   <section class="exp-panel align-left" id="exp-retreats">
@@ -174,6 +176,7 @@
       </div>
     </div>
   </section>
+  </div><!-- /.exp-stage -->
 
   <!-- ============ RETREATS DEEP-DIVE (sub-types) ============ -->
   <section class="section retreats" id="retreats">

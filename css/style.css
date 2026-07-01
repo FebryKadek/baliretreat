@@ -171,11 +171,20 @@ p { color: var(--ink-soft); }
 /* ---------- Experiences intro ---------- */
 .experiences-intro { padding-bottom: clamp(2.5rem, 5vw, 4rem); }
 
-/* ---------- Fixed backdrop for experience sections ----------
-   A single position:fixed layer (composited natively, works on mobile) shows
-   one image at a time. Images cross-fade via opacity when the active section
-   changes — no per-frame scroll math, so no jank. */
-.exp-bgs { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+/* ---------- Sticky backdrop for experience sections ----------
+   The backdrop is a sticky element in normal flow: it stays pinned to the
+   viewport while the tall stage (all five panels) scrolls past, so the image
+   looks "fixed" without a position:fixed layer behind content (which Samsung
+   Internet fails to paint). Its negative margin removes its layout height so
+   the panels scroll over it. Images cross-fade on section change — no jank. */
+.exp-stage { position: relative; }
+.exp-bg {
+  position: sticky; top: 0;
+  height: 100vh;
+  margin-bottom: -100vh;   /* occupy no layout space; panels overlap it */
+  z-index: 0; overflow: hidden;
+  pointer-events: none;
+}
 .exp-bg-layer {
   position: absolute; inset: 0;
   background-size: cover; background-position: center;
